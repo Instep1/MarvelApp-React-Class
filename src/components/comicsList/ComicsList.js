@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import { Link } from 'react-router-dom';
 
 import './comicsList.scss';
 import useMarvelService from '../../services/MarvelService';
@@ -41,12 +42,12 @@ const ComicsList = () => {
             return (
                 <li 
                 className="comics__item"
-                key={comics.id}>
-                    <a href="#">
+                key={i}>
+                    <Link to={`${item.id}`}>
                         <img src={item.thumbnail} alt="ultimate war" className="comics__item-img"/>
                         <div className="comics__item-name">{item.title}</div>
                         <div className="comics__item-price">{item.price}</div>
-                    </a>
+                    </Link>
                 </li>
             )
         });

@@ -1,10 +1,13 @@
-import './singleComics.scss';
+import './singleComicsPage.scss';
 import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMesage from '../errorMessage/ErrorMessage';
 
-const SingleComics = () => {
+const SingleComicsPage = () => {
+
+    const {comicsId} = useParams();
 
     const [comics, setComics] = useState({});
 
@@ -12,15 +15,14 @@ const SingleComics = () => {
 
     useEffect(() => {
         onRequest()
-    }, [])
+    }, [comicsId])
 
     const onComicsLoaded = (comics) => {
         setComics(comics);
     }
 
     const onRequest = () => {
-        const id = 211;
-        getComics(id)
+        getComics(comicsId)
             .then(onComicsLoaded)
     }
 
@@ -29,12 +31,11 @@ const SingleComics = () => {
     const content = !(loading || error) ? <View comics={comics} /> : null;
 
     return (
-        <div className="single-comic">
-            {errorMessage}
-            {spinner}
-            {content}
-            <a href="#" className="single-comic__back">Back to all</a>
-        </div>
+        <>
+        {errorMessage}
+        {spinner}
+        {content}
+        </>            
     )
 }
 
@@ -42,8 +43,8 @@ const View = ({comics}) => {
     const {title, thumbnail, description, pageCount, language, price} = comics;
 
     return(
-        <>
-        <img src={thumbnail} alt="x-men" className="single-comic__img"/>
+        <div className="single-comic">
+        <img src={thumbnail} alt={title} className="single-comic__img"/>
             <div className="single-comic__info">
                 <h2 className="single-comic__name">{title}</h2>
                 <p className="single-comic__descr">{description}</p>
@@ -51,8 +52,9 @@ const View = ({comics}) => {
                 <p className="single-comic__descr">Language: {language}</p>
                 <div className="single-comic__price">{price}</div>
             </div>
-        </>
+            <Link to='/comics' className="single-comic__back">Back to all</Link>
+        </div>
     )
 }
 
-export default SingleComics;
+export default SingleComicsPage;
