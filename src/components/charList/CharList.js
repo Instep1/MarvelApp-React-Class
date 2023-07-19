@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import PropTypes from 'prop-types';
 
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMesage from '../errorMessage/ErrorMessage';
 import './charList.scss';
-
 
 const CharList = (props) => {
 
@@ -53,30 +53,34 @@ const CharList = (props) => {
             const imgEl = item.thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg" ? <img src={item.thumbnail} alt="abyss" style={{objectFit: 'unset'}}/> : <img src={item.thumbnail} alt="abyss" style={{objectFit: 'cover'}}/>
 
             return (
-                <li 
-                className="char__item"
-                tabIndex={0}
-                ref={el => itemsRef.current[i] = el}
-                key={item.id}
-                onClick={() => {
-                    props.onCharSelected(item.id);
-                    focusChar(i);    
-                    }}
-                onKeyPress={(e) => {
-                    if (e.key === '' || e.key === 'Enter') {
-                    props.onCharSelected(item.id);
-                    focusChar(i); 
-                    }
-                }}>
-                        {imgEl}
-                        <div className="char__name">{item.name}</div>
-                    </li>
+                <CSSTransition key={item.id} timeout={500} classNames='char__item'>
+                            <li 
+                                className="char__item"
+                                tabIndex={0}
+                                ref={el => itemsRef.current[i] = el}
+                                key={item.id}
+                                onClick={() => {
+                                    props.onCharSelected(item.id);
+                                    focusChar(i);    
+                                    }}
+                                onKeyPress={(e) => {
+                                    if (e.key === '' || e.key === 'Enter') {
+                                    props.onCharSelected(item.id);
+                                    focusChar(i); 
+                                    }
+                                }}>
+                                        {imgEl}
+                                        <div className="char__name">{item.name}</div>
+                            </li>
+                </CSSTransition>
             )
         });
 
         return (
             <ul className="char__grid">
+                <TransitionGroup component={null}>
                     {items}
+                </TransitionGroup>
                 </ul>
         )
     }
@@ -86,7 +90,7 @@ const CharList = (props) => {
 
     const errorMesage = error ? <ErrorMesage/> : null;
     const spinner = loading && !newItemLoading ? <Spinner/> : null;
-    
+
     return(
         <div className="char__list">
             {errorMesage}

@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import './comicsList.scss';
 import useMarvelService from '../../services/MarvelService';
@@ -25,7 +26,7 @@ const ComicsList = () => {
             .then(onComicsLoaded)
     }
 
-    const onComicsLoaded = (newComics) => {
+    const onComicsLoaded = async (newComics) => {
         let ended = false;
         if (newComics < 9) {
             ended = true;
@@ -40,21 +41,25 @@ const ComicsList = () => {
     function renderComics(arr) {
         const comics = arr.map((item, i) => {
             return (
-                <li 
-                className="comics__item"
-                key={i}>
-                    <Link to={`${item.id}`}>
-                        <img src={item.thumbnail} alt="ultimate war" className="comics__item-img"/>
-                        <div className="comics__item-name">{item.title}</div>
-                        <div className="comics__item-price">{item.price}</div>
-                    </Link>
-                </li>
+                <CSSTransition timeout={500} classNames='comics__item'>
+                    <li 
+                        className="comics__item"
+                        key={i}>
+                            <Link to={`${item.id}`}>
+                                <img src={item.thumbnail} alt="ultimate war" className="comics__item-img"/>
+                                <div className="comics__item-name">{item.title}</div>
+                                <div className="comics__item-price">{item.price}</div>
+                            </Link>
+                    </li>
+                </CSSTransition>
             )
         });
 
         return (
             <ul className="comics__grid">
-                {comics}
+                <TransitionGroup component={null}>
+                    {comics}
+                </TransitionGroup>
             </ul>
         )
     }
